@@ -103,7 +103,7 @@ const SettingsScreen: React.FC = () => {
         right={
           <Switch
             value={settings.showCompletedTasks}
-            onValueChange={v => dispatch(setShowCompletedTasks(v))}
+            onValueChange={v => { dispatch(setShowCompletedTasks(v)); }}
             trackColor={{true: theme.colors.primary}}
           />
         }
@@ -116,7 +116,7 @@ const SettingsScreen: React.FC = () => {
         right={
           <Switch
             value={settings.notificationsEnabled}
-            onValueChange={v => dispatch(setNotificationsEnabled(v))}
+            onValueChange={v => { dispatch(setNotificationsEnabled(v)); }}
             trackColor={{true: theme.colors.primary}}
           />
         }
@@ -131,7 +131,7 @@ const SettingsScreen: React.FC = () => {
         right={
           <Switch
             value={settings.calendarSyncEnabled}
-            onValueChange={v => dispatch(setCalendarSyncEnabled(v))}
+            onValueChange={v => { dispatch(setCalendarSyncEnabled(v)); }}
             trackColor={{true: theme.colors.primary}}
           />
         }

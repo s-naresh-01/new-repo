@@ -82,7 +82,7 @@ const CalendarSyncScreen: React.FC = () => {
           </View>
           <Switch
             value={settings.calendarSyncEnabled}
-            onValueChange={v => dispatch(setCalendarSyncEnabled(v))}
+            onValueChange={v => { dispatch(setCalendarSyncEnabled(v)); }}
             trackColor={{true: theme.colors.primary}}
           />
         </View>

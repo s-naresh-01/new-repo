@@ -106,7 +106,10 @@ const TaskItem = memo<Props>(({task, onPress, onComplete, onLongPress, selected}
             />
           ) : null}
 
-          {task.reminderOffsets && JSON.parse(task.reminderOffsets || '[]').length > 0 ? (
+          {task.reminderOffsets &&
+          (Array.isArray(task.reminderOffsets)
+            ? (task.reminderOffsets as unknown as number[]).length > 0
+            : JSON.parse((task.reminderOffsets as unknown as string) || '[]').length > 0) ? (
             <Icon
               name="bell-outline"
               size={12}
