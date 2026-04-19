@@ -1,30 +1,23 @@
-import {Platform, PermissionsAndroid} from 'react-native';
-import {formatTime, formatTaskDate} from '../utils/dateHelpers';
-
-// Notifee-based notifications (configured for compile-time; degrades gracefully if not linked)
-let notifee: any = null;
-try {
-  notifee = require('@notifee/react-native').default;
-} catch {
-  // Notifee not linked - fallback to no-op
-}
+import notifee, {
+  AndroidImportance,
+  TriggerType,
+} from '@notifee/react-native';
 
 export const CHANNEL_ID = 'ticktick_reminders';
 export const FOCUS_CHANNEL_ID = 'ticktick_focus';
 
 export const setupNotifications = async (): Promise<void> => {
-  if (!notifee) return;
   await notifee.createChannel({
     id: CHANNEL_ID,
     name: 'Task Reminders',
-    importance: 4,
+    importance: AndroidImportance.HIGH,
     sound: 'default',
     vibration: true,
   });
   await notifee.createChannel({
     id: FOCUS_CHANNEL_ID,
     name: 'Focus Timer',
-    importance: 3,
+    importance: AndroidImportance.DEFAULT,
   });
 };
 
@@ -35,7 +28,6 @@ export const scheduleTaskReminder = async (
   dueTime: number | null,
   offsetMinutes: number,
 ): Promise<void> => {
-  if (!notifee) return;
   const triggerTime = (dueTime || dueDate) - offsetMinutes * 60 * 1000;
   if (triggerTime <= Date.now()) return;
 
@@ -52,18 +44,17 @@ export const scheduleTaskReminder = async (
       data: {taskId},
     },
     {
-      type: 1, // TimestampTrigger
+      type: TriggerType.TIMESTAMP,
       timestamp: triggerTime,
     },
   );
 };
 
 export const cancelTaskReminders = async (taskId: string): Promise<void> => {
-  if (!notifee) return;
   const notifications = await notifee.getTriggerNotifications();
   for (const n of notifications) {
     if (n.notification?.data?.taskId === taskId) {
-      await notifee.cancelTriggerNotification(n.notification.id);
+      await notifee.cancelTriggerNotification(n.notification.id!);
     }
   }
 };
@@ -80,7 +71,6 @@ export const scheduleAllReminders = async (task: any): Promise<void> => {
 export const showFocusCompleteNotification = async (
   sessionType: string,
 ): Promise<void> => {
-  if (!notifee) return;
   const messages: Record<string, {title: string; body: string}> = {
     pomodoro: {title: 'Focus session complete!', body: "Time for a break. You're doing great!"},
     short_break: {title: 'Break over!', body: 'Ready to focus again?'},
